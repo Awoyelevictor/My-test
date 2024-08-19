@@ -1,0 +1,8 @@
+<form id="payment-form">
+  <!-- Your existing input fields -->
+
+  <!-- Container for inline Paystack form -->
+  <div id="payment-form-container"></div>
+
+  <button type="button" onclick="payWithPaystack()">Pay Now</button>
+</form>
