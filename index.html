@@ -13,7 +13,7 @@
             <div class="card" id="card">
                 <div class="front">
                     <img src="images/chip.png" alt="Card Chip" class="card-chip">
-                    <img src="" alt="Card Logo" class="card-logo" id="card-logo">
+                    <img src="images/default.png" alt="Card Logo" class="card-logo" id="card-logo">
                     <div class="card-content">
                         <div class="card-number" id="card-number-display">#### **** **** ####</div>
                         <div class="card-details">
@@ -33,7 +33,7 @@
                     <div class="white-box">
                         <span id="cvv-display">CVV</span>
                     </div>
-                    <img src="" alt="Card Logo" class="card-logo" id="card-logo-back">
+                    <img src="images/default.png" alt="Card Logo" class="card-logo" id="card-logo-back">
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
                 <label for="amount">Amount</label>
                 <input type="number" id="amount" placeholder="Enter amount" required>
             </div>
-            <button type="button" onclick="payWithPaystack()">Pay Now</button>
+            <button type="button" id="payButton">Pay Now</button>
         </form>
         <div id="full-content" style="display: none;">
             <h2>Full Content</h2>

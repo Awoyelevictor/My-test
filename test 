@@ -1,8 +1,460 @@
-<form id="payment-form">
-  <!-- Your existing input fields -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card-preview">
+            <div class="card" id="card">
+                <div class="front">
+                    <img src="images/chip.png" alt="Card Chip" class="card-chip">
+                    <img src="" alt="Card Logo" class="card-logo" id="card-logo">
+                    <div class="card-content">
+                        <div class="card-number" id="card-number-display">#### **** **** ####</div>
+                        <div class="card-details">
+                            <div class="card-holder">
+                                <label>Card Holder</label>
+                                <span id="card-holder-display">AD SOYAD</span>
+                            </div>
+                            <div class="card-expiry">
+                                <label>Expires</label>
+                                <span id="card-expiry-display">MM/YY</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="black-bar"></div>
+                    <div class="white-box">
+                        <span id="cvv-display">CVV</span>
+                    </div>
+                    <img src="" alt="Card Logo" class="card-logo" id="card-logo-back">
+                </div>
+            </div>
+        </div>
+        <h2>Payment Form</h2>
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" placeholder="Card Number" required>
+            </div>
+            <div class="form-group">
+                <label for="card-name">Card Name</label>
+                <input type="text" id="card-name" placeholder="Card Name" required>
+            </div>
+            <div class="form-group">
+                <label for="expiry-month">Expiration Date</label>
+                <div class="expiry">
+                    <select id="expiry-month" required>
+                        <option value="" disabled selected>Month</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <select id="expiry-year" required>
+                        <option value="" disabled selected>Year</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="CVV" required>
+            </div>
+            <div class="form-group">
+                <label for="email-address">Email</label>
+                <input type="email" id="email-address" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" placeholder="Enter amount" required>
+            </div>
+            <button type="button" onclick="payWithPaystack()">Pay Now</button>
+        </form>
+        <div id="full-content" style="display: none;">
+            <h2>Full Content</h2>
+            <p>This is the full content that you have unlocked!</p>
+            <!-- Your full content here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+    margin: 0;
+}
 
-  <!-- Container for inline Paystack form -->
-  <div id="payment-form-container"></div>
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
 
-  <button type="button" onclick="payWithPaystack()">Pay Now</button>
-</form>
+.card-preview {
+    margin-bottom: 20px;
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border-radius: 8px;
+    perspective: 1000px;
+}
+
+.card .front, .card .back {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: url('images/card-background.jpeg') no-repeat center/cover;
+    position: absolute;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+}
+
+.card .back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.card.flipped .front {
+    transform: rotateY(180deg);
+}
+
+.card.flipped .back {
+    transform: rotateY(0deg);
+}
+
+.card-chip {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: auto;
+}
+
+.card-logo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: auto;
+    margin-top: -10px;
+}
+
+.card-content {
+    color: white;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+}
+
+.card-number {
+    font-size: 18px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.card-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-holder, .card-expiry {
+    font-size: 14px;
+}
+
+.card-holder label, .card-expiry label {
+    display: block;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.black-bar {
+    background: #000;
+    height: 40px;
+    width: 100%;
+  
+}
+
+.white-box {
+    background: #fff;
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: #000;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  margin-top: 0px;
+}
+
+#cvv-display {
+    letter-spacing: 2px;
+}
+
+.card-logo-back {
+    position: absolute;
+    bottom: -20px;
+    right: 20px;
+    width: 50px;
+    height: auto;
+    margin-top:-20px ;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.expiry {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+#card-errors {
+    color: red;
+    margin-top: 10px;
+}
+function payWithPaystack() {
+var handler = PaystackPop.setup({
+key: 'pk_test_027b962d77880220eef66c2c8264bd9adf7c85d7', // Replace with your Paystack public key
+email: document.getElementById('email-address').value,
+amount: document.getElementById('amount').value * 100, // Convert amount to kobo
+currency: 'NGN',
+ref: '' + Math.floor((Math.random() * 1000000000) + 1), // Generate a unique transaction reference
+onClose: function() {
+alert('Payment was not completed.');
+},
+callback: function(response) {
+console.log('Payment successful. Reference: ' + response.reference);
+// Show the full content after successful payment
+document.getElementById('full-content').style.display = 'block';
+// Optionally, you can hide the payment form or clear it
+document.getElementById('payment-form').style.display = 'none';
+}
+});
+
+handler.openIframe(); // Opens the inline payment form without a popup
+}
+
+// Card number input listener to format and display the card number
+document.getElementById('card-number').addEventListener('input', function(e) {
+var cardNumber = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+var cardNumberFormatted = cardNumber.replace(/(.{4})/g, '$1 ');
+document.getElementById('card-number-display').textContent = cardNumberFormatted.trim();
+});
+
+// CVV input listener to flip the card
+document.getElementById('cvv').addEventListener('focus', function() {
+document.getElementById('card').classList.add('flipped');
+});
+
+document.getElementById('cvv').addEventListener('blur', function() {
+document.getElementById('card').classList.remove('flipped');
+});
+
+// Expiry date inputs listener to format and display the expiry date
+document.getElementById('expiry-month').addEventListener('change', function() {
+var month = this.value;
+var year = document.getElementById('expiry-year').value;
+if (year) {
+document.getElementById('card-expiry-display').textContent = month + '/' + year.substr(2, 2);
+}
+});
+
+document.getElementById('expiry-year').addEventListener('change', function() {
+var month = document.getElementById('expiry-month').value;
+var year = this.value;
+if (month) {
+document.getElementById('card-expiry-display').textContent = month + '/' + year.substr(2, 2);
+}
+});
+
+// Cardholder name input listener to display the name
+document.getElementById('card-name').addEventListener('input', function(e) {
+document.getElementById('card-holder-display').textContent = e.target.value.toUpperCase();
+});
+this code worked but you didn't add this one 
+const cardNumberInput = document.getElementById('card-number');
+const cardNameInput = document.getElementById('card-name');
+const expiryMonthInput = document.getElementById('expiry-month');
+const expiryYearInput = document.getElementById('expiry-year');
+const cvvInput = document.getElementById('cvv');
+const cardNumberDisplay = document.getElementById('card-number-display');
+const cardHolderDisplay = document.getElementById('card-holder-display');
+const cardExpiryDisplay = document.getElementById('card-expiry-display');
+const cvvDisplay = document.getElementById('cvv-display');
+const cardLogo = document.getElementById('card-logo');
+const cardLogoBack = document.getElementById('card-logo-back');
+const card = document.getElementById('card');
+
+const cardTypePatterns = {
+    visa: /^4/,
+    mastercard: /^5[1-5]/,
+    amex: /^3[47]/,
+    discover: /^6(?:011|5)/,
+    diners: /^3(?:0[0-5]|[68])/,
+    jcb: /^(?:2131|1800|35\d{3})/,
+    unionpay: /^62/,
+    verve: /^(5061|6500|5080)/
+};
+
+const cardLogos = {
+    visa: 'file:///C:/Users/user/Desktop/pay/images/visa.png',
+    mastercard: 'file:///C:/Users/user/Desktop/pay/images/mastercard.png',
+    amex: 'file:///C:/Users/user/Desktop/pay/images/amex.png',
+    discover: 'file:///C:/Users/user/Desktop/pay/images/discover.png',
+    diners: 'file:///C:/Users/user/Desktop/pay/images/diners.png',
+    jcb: 'file:///C:/Users/user/Desktop/pay/images/jcb.png',
+    unionpay: 'file:///C:/Users/user/Desktop/pay/images/unionpay.png',
+    verve: 'file:///C:/Users/user/Desktop/pay/images/verve.png'
+};
+
+cardNumberInput.addEventListener('input', updateCardDetails);
+cardNameInput.addEventListener('input', updateCardDetails);
+expiryMonthInput.addEventListener('input', updateCardDetails);
+expiryYearInput.addEventListener('input', updateCardDetails);
+cvvInput.addEventListener('input', updateCardDetails);
+cvvInput.addEventListener('focus', () => {
+    card.classList.add('flipped');
+});
+cvvInput.addEventListener('blur', () => {
+    card.classList.remove('flipped');
+});
+
+function updateCardDetails() {
+    const cardNumber = cardNumberInput.value;
+    const cardName = cardNameInput.value;
+    const expiryMonth = expiryMonthInput.value;
+    const expiryYear = expiryYearInput.value;
+    const cvv = cvvInput.value;
+
+    cardNumberDisplay.textContent = formatCardNumber(cardNumber);
+    cardHolderDisplay.textContent = cardName || 'AD SOYAD';
+    cardExpiryDisplay.textContent = `${expiryMonth}/${expiryYear}` || 'MM/YY';
+    cvvDisplay.textContent = cvv || '***';
+
+    const cardType = getCardType(cardNumber);
+    if (cardType) {
+        cardLogo.src = cardLogos[cardType];
+        cardLogoBack.src = cardLogos[cardType];
+    } else {
+        cardLogo.src = 'images/default.png';
+        cardLogoBack.src = 'images/default.png';
+    }
+}
+
+function formatCardNumber(number) {
+    return number.replace(/\s+/g, '').replace(/(\d{4})/g, '$1 ').trim();
+}
+
+function getCardType(number) {
+    for (const [type, pattern] of Object.entries(cardTypePatterns)) {
+        if (pattern.test(number)) {
+            return type;
+        }
+    }
+    return null;
+}
+
+card.addEventListener('mouseenter', () => {
+  card.classList.add('flipped');
+});
+
+card.addEventListener('mouseleave', () => {
+  card.classList.remove('flipped');
+});
+const payButton = document.getElementById('payButton');
+
+payButton.addEventListener('click', function() {
+    var handler = PaystackPop.setup({
+        key: 'your-public-key', // Replace with your Paystack public key
+        email: 'customer@example.com', // Replace with customer's email
+        amount: 5000, // Amount in kobo
+        currency: 'NGN',
+        ref: '' + Math.floor((Math.random() * 1000000000) + 1),
+        callback: function(response) {
+            // Send payment reference to backend for verification
+            verifyPayment(response.reference);
+        },
+        onClose: function() {
+            alert('Payment window closed.');
+        }
+    });
+    handler.openIframe();
+});
+
+help me do it that it will detect the type of card and the logo will show at the top just like the code up here 
